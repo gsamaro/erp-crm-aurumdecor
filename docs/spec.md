@@ -82,6 +82,38 @@ Arquitetura deve seguir:
 
 ---
 
+# 3.1 Autenticação e Usuários (Admin)
+
+## Objetivo
+
+Garantir acesso seguro ao painel administrativo e permitir criação de usuários apenas por administradores.
+
+## Regras e comportamento esperado
+
+* **Login obrigatório** para acessar qualquer página além da tela de login.
+* **Bootstrap do primeiro admin** só aparece quando ainda não existe nenhum usuário.
+* **Após login com sucesso**, o usuário é enviado para uma **tela de menu** contendo (por enquanto) apenas o acesso à página de Usuários.
+* **Sessão persistente** enquanto o usuário estiver ativo na aplicação.
+* **Logout automático** após **15 minutos de inatividade** (timeout baseado no último acesso).
+* **Bloqueio de navegação**: páginas protegidas redirecionam para login quando não houver sessão válida.
+
+## Caso de uso: Acesso ao painel administrativo
+
+**Ator:** Administrador
+
+**Fluxo principal:**
+
+1. Admin acessa a tela de login.
+2. Informa email e senha válidos.
+3. Sistema autentica e cria sessão.
+4. Sistema redireciona para a tela de menu.
+5. Admin acessa a página de Usuários.
+
+**Fluxos alternativos:**
+
+* Se não existir nenhum usuário, o sistema exibe a opção de bootstrap para criação do primeiro admin.
+* Se a sessão expirar por inatividade, o sistema encerra a sessão e redireciona para login.
+
 # 4. Gestão de Produtos e Custos
 
 ## Objetivo

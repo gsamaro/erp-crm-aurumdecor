@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy.orm import Session
 
 from app.domain.user import User
@@ -14,6 +16,11 @@ class UserRepository:
         return user
 
     def get_by_id(self, user_id):
+        if isinstance(user_id, str):
+            try:
+                user_id = uuid.UUID(user_id)
+            except ValueError:
+                return None
         return self.db.query(User).filter(User.id == user_id).first()
 
     def get_by_email(self, email: str):
@@ -21,6 +28,9 @@ class UserRepository:
 
     def list(self):
         return self.db.query(User).all()
+
+    def count(self) -> int:
+        return self.db.query(User).count()
 
     def update(self, user: User) -> User:
         self.db.add(user)
