@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api.routes import auth, users
+from app.api.routes import auth, clients, users
 
 app = FastAPI(title="ERP CRM Aurum Decor")
 
@@ -12,3 +12,4 @@ def root():
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(clients.router)

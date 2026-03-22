@@ -16,6 +16,7 @@ if not enforce_session(st.session_state):
 st.title("Menu")
 st.caption("Selecione uma opção")
 
+st.page_link(resolve_page_path("2_Usuarios.py", __file__), label="Usuários", icon="👤")
 st.page_link(
-    resolve_page_path("2_Usuarios.py", __file__), label="Usuários", icon="👤"
+    resolve_page_path("3_Clientes.py", __file__), label="Clientes", icon="🧑‍💼"
 )

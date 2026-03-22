@@ -45,7 +45,7 @@ def _normalize_database_url(raw_url: str | None) -> str | None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 from app.domain.base import Base
-from app.domain import user  # noqa: F401
+from app.domain import client, user  # noqa: F401
 
 target_metadata = Base.metadata
 
