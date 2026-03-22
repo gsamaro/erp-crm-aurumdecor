@@ -5,7 +5,12 @@ import streamlit as st
 
 
 def get_api_base_url() -> str:
-    return os.getenv("API_BASE_URL", "http://localhost:8000")
+    secrets_url = None
+    try:
+        secrets_url = st.secrets.get("API_BASE_URL")
+    except Exception:
+        secrets_url = None
+    return secrets_url or os.getenv("API_BASE_URL", "http://localhost:8000")
 
 
 def get_token() -> str | None:
