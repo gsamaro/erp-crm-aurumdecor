@@ -47,6 +47,9 @@ testpaths = ["app/tests"]
 python_version = "3.11"
 strict = false
 
+[tool.setuptools]
+packages = ["app"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
