@@ -22,6 +22,12 @@ from components.ui import (
     status_tag,
 )
 
+
+@st.cache_data(ttl=30)
+def fetch_users(token: str | None) -> list[dict]:
+    return request("GET", "/users", token=token)
+
+
 configure_page("Usuários", "👤")
 render_sidebar(__file__)
 page_header(
@@ -37,7 +43,7 @@ if not enforce_session(st.session_state):
 
 token = st.session_state.get("access_token")
 try:
-    users = request("GET", "/users", token=token)
+    users = fetch_users(token)
 except Exception as exc:
     st.error(f"Erro ao carregar usuários: {exc}")
     users = []
@@ -76,6 +82,7 @@ if submitted:
             json={"name": name, "email": email, "password": password},
             token=token,
         )
+        fetch_users.clear()
         st.toast("Usuário criado", icon="✅")
     except Exception as exc:
         st.error(f"Erro ao criar usuário: {exc}")

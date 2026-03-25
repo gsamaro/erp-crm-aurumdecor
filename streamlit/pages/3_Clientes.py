@@ -23,6 +23,12 @@ from components.ui import (
     status_tag,
 )
 
+
+@st.cache_data(ttl=30)
+def fetch_clients(token: str | None) -> list[dict]:
+    return request("GET", "/clients", token=token)
+
+
 configure_page("Clientes", "🧑‍💼")
 render_sidebar(__file__)
 
@@ -38,7 +44,7 @@ page_header(
 
 try:
     token = st.session_state.get("access_token")
-    clients = request("GET", "/clients", token=token)
+    clients = fetch_clients(token)
 except Exception as exc:
     st.error(f"Erro ao carregar clientes: {exc}")
     clients = []
@@ -91,6 +97,7 @@ if submitted:
             },
             token=token,
         )
+        fetch_clients.clear()
         st.toast("Cliente cadastrado", icon="✅")
     except Exception as exc:
         st.error(f"Erro ao cadastrar: {exc}")
@@ -184,6 +191,7 @@ if clients:
                         },
                         token=token,
                     )
+                    fetch_clients.clear()
                     st.toast("Cliente atualizado", icon="✅")
                 except Exception as exc:
                     st.error(f"Erro ao atualizar: {exc}")

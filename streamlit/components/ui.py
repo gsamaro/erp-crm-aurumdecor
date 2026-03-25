@@ -71,12 +71,13 @@ def configure_page(title: str, icon: str) -> None:
             color: var(--color-text) !important;
         }
         .panel-card {
-            background: var(--color-card);
-            border: 1px solid var(--color-border);
-            border-radius: 14px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-soft);
-            margin-bottom: 1.5rem;
+            background: transparent;
+            border: none;
+            border-top: 1px solid #111111;
+            border-radius: 0;
+            padding: 1.25rem 0 0;
+            box-shadow: none;
+            margin: 1.25rem 0;
         }
         .kpi-card {
             background: var(--color-card);
@@ -172,8 +173,31 @@ def configure_page(title: str, icon: str) -> None:
         .stTextArea label, .stNumberInput label, .stDateInput label {
             color: var(--color-text) !important;
         }
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--color-text) !important;
+        }
+        a, a:visited {
+            color: var(--color-text) !important;
+        }
+        [data-testid="stPageLink"],
+        [data-testid="stPageLink"] span,
+        [data-testid="stSidebar"] a,
+        [data-testid="stSidebar"] span {
+            color: var(--color-text) !important;
+        }
+        [data-testid="stSidebar"] svg {
+            fill: var(--color-text) !important;
+            color: var(--color-text) !important;
+        }
+        [data-testid="stExpander"] summary,
+        [data-testid="stExpander"] summary span {
+            color: var(--color-text) !important;
+        }
         .stCaption {
             color: var(--color-text-muted) !important;
+            font-size: 1.15rem;
+            line-height: 1.55;
+            font-weight: 500;
         }
         div[data-baseweb="input"] input,
         div[data-baseweb="textarea"] textarea,
