@@ -33,6 +33,11 @@ Definir o padrão visual e de experiência para o ERP em Streamlit, garantindo u
   - Texto comum: 14–16px
   - Labels e metadados: 12–13px
 
+### Legibilidade e contraste
+- **Evitar texto claro demais** (usar `#2F2F2F` para texto principal e `#6B7280` para texto secundário)
+- Inputs e selects sempre com **fundo branco**, borda sutil e texto em cinza escuro
+- Sidebar e cards com texto em **alto contraste** para leitura rápida
+
 ## Layout padrão das páginas (Streamlit)
 1. **Sidebar** para navegação global
 2. **Header com título** e descrição curta da página

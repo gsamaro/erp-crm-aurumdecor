@@ -52,6 +52,9 @@ def configure_page(title: str, icon: str) -> None:
             font-family: 'Manrope', sans-serif;
             color: var(--color-text);
         }
+        body {
+            font-size: 15px;
+        }
         .stApp {
             background: var(--color-bg);
         }
@@ -63,6 +66,9 @@ def configure_page(title: str, icon: str) -> None:
         [data-testid="stSidebar"] {
             background: var(--color-card);
             border-right: 1px solid var(--color-border);
+        }
+        [data-testid="stSidebar"] * {
+            color: var(--color-text) !important;
         }
         .panel-card {
             background: var(--color-card);
@@ -161,6 +167,28 @@ def configure_page(title: str, icon: str) -> None:
         }
         div.stButton > button:hover {
             filter: brightness(0.98);
+        }
+        .stMarkdown, .stCaption, .stTextInput label, .stSelectbox label,
+        .stTextArea label, .stNumberInput label, .stDateInput label {
+            color: var(--color-text) !important;
+        }
+        .stCaption {
+            color: var(--color-text-muted) !important;
+        }
+        div[data-baseweb="input"] input,
+        div[data-baseweb="textarea"] textarea,
+        div[data-baseweb="select"] > div {
+            background: var(--color-card) !important;
+            color: var(--color-text) !important;
+            border: 1px solid var(--color-border) !important;
+            border-radius: 10px !important;
+        }
+        div[data-baseweb="input"] input::placeholder,
+        div[data-baseweb="textarea"] textarea::placeholder {
+            color: var(--color-text-muted) !important;
+        }
+        div[data-baseweb="select"] > div > div {
+            color: var(--color-text) !important;
         }
         </style>
         """,
