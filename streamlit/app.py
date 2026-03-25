@@ -1,10 +1,8 @@
 import streamlit as st
 
-st.set_page_config(page_title="Aurum Decor Admin", page_icon="✨")
+from components.ui import configure_page, page_header, render_sidebar
 
-st.title("Aurum Decor Admin")
-st.caption("Use o menu lateral para navegar.")
-
-st.page_link("pages/1_Login.py", label="Login", icon="🔐")
-st.page_link("pages/0_Menu.py", label="Menu", icon="📋")
-st.page_link("pages/2_Usuarios.py", label="Usuários", icon="👤")
+configure_page("Home", "🏠")
+render_sidebar(__file__)
+page_header("ERP Aurum Decor", "Painel administrativo", breadcrumb="Home")
+st.info("Use o menu lateral para navegar pelas seções do ERP.")

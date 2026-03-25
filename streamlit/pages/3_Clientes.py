@@ -8,21 +8,44 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from components.api import request
 from components.navigation import resolve_page_path
 from components.session import enforce_session
+from components.ui import (
+    action_bar,
+    configure_page,
+    page_header,
+    render_sidebar,
+    section_title,
+)
 
-st.set_page_config(page_title="Clientes", page_icon="🧑‍💼")
+configure_page("Clientes", "🧑‍💼")
+render_sidebar(__file__)
 
 if not enforce_session(st.session_state):
     st.switch_page(resolve_page_path("1_Login.py", __file__))
     st.stop()
 
-st.title("Clientes")
+page_header(
+    "Clientes",
+    "Cadastro e gestão de clientes do CRM.",
+    breadcrumb="CRM / Clientes",
+)
 
-st.subheader("Cadastrar cliente")
+section_title("Filtros", "Refine a lista de clientes.")
+filter_col1, filter_col2, filter_col3, _ = st.columns([2, 2, 2, 3])
+filter_name = filter_col1.text_input("Nome", placeholder="Buscar por nome")
+filter_email = filter_col2.text_input("Email", placeholder="Buscar por email")
+filter_status = filter_col3.selectbox(
+    "Status", options=["Todos", "active", "inactive"], index=0
+)
+
+section_title("Ações", "Cadastre novos clientes.")
+create_clicked, _ = action_bar("Novo cliente")
+
 with st.form("create_client"):
-    name = st.text_input("Nome")
-    phone = st.text_input("Telefone")
-    email = st.text_input("Email")
-    status = st.selectbox("Status", options=["active", "inactive"], index=0)
+    form_col1, form_col2 = st.columns(2)
+    name = form_col1.text_input("Nome")
+    phone = form_col1.text_input("Telefone")
+    email = form_col2.text_input("Email")
+    status = form_col2.selectbox("Status", options=["active", "inactive"], index=0)
     notes = st.text_area("Observações")
     submitted = st.form_submit_button("Salvar")
 
@@ -41,13 +64,13 @@ if submitted:
             },
             token=token,
         )
-        st.success("Cliente cadastrado")
+        st.toast("Cliente cadastrado", icon="✅")
     except Exception as exc:
         st.error(f"Erro ao cadastrar: {exc}")
 
 st.divider()
 
-st.subheader("Lista de clientes")
+section_title("Clientes", "Lista atual de clientes cadastrados.")
 try:
     token = st.session_state.get("access_token")
     clients = request("GET", "/clients", token=token)
@@ -56,6 +79,15 @@ except Exception as exc:
     clients = []
 
 if clients:
+    if filter_name:
+        clients = [c for c in clients if filter_name.lower() in c["name"].lower()]
+    if filter_email:
+        clients = [
+            c for c in clients if filter_email.lower() in (c.get("email") or "").lower()
+        ]
+    if filter_status != "Todos":
+        clients = [c for c in clients if c.get("status") == filter_status]
+
     for client in clients:
         with st.expander(f"{client['name']} ({client.get('status', 'active')})"):
             st.write(f"**Telefone:** {client.get('phone') or '-'}")
@@ -91,7 +123,7 @@ if clients:
                         },
                         token=token,
                     )
-                    st.success("Cliente atualizado")
+                    st.toast("Cliente atualizado", icon="✅")
                 except Exception as exc:
                     st.error(f"Erro ao atualizar: {exc}")
 else:

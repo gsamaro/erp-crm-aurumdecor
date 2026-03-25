@@ -8,11 +8,11 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from components.api import request
 from components.navigation import resolve_page_path
 from components.session import enforce_session, refresh_session
+from components.ui import configure_page, page_header, render_sidebar, section_title
 
-st.set_page_config(page_title="Login", page_icon="🔐")
-
-st.title("Aurum Decor • Login")
-st.caption("Acesse o painel administrativo")
+configure_page("Login", "🔐")
+render_sidebar(__file__)
+page_header("Login", "Acesse o painel administrativo", breadcrumb="Início / Login")
 
 if enforce_session(st.session_state):
     st.switch_page(resolve_page_path("0_Menu.py", __file__))
@@ -47,8 +47,10 @@ except Exception:
 
 if bootstrap_allowed:
     st.divider()
-    st.subheader("Primeiro acesso (bootstrap)")
-    st.caption("Crie o primeiro admin caso ainda não exista nenhum usuário.")
+    section_title(
+        "Primeiro acesso (bootstrap)",
+        "Crie o primeiro admin caso ainda não exista nenhum usuário.",
+    )
 
     with st.form("bootstrap_form"):
         name = st.text_input("Nome", key="boot_name")
