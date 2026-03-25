@@ -14,6 +14,7 @@ render_sidebar(__file__)
 
 if not enforce_session(st.session_state):
     st.switch_page(resolve_page_path("1_Login.py", __file__))
+    st.stop()
 
 page_header("Menu", "Selecione uma opção para continuar.", breadcrumb="Início")
 

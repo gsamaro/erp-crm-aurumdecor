@@ -11,8 +11,12 @@
 
 ## Secrets
 - Nunca commitar `.env` (já está no `.gitignore`).
-- Local: use `.env` para variáveis como `DATABASE_URL` e `SECRET_KEY`.
+- Local: use `.env` para variáveis como `DATABASE_URL`, `SECRET_KEY` e `ENCRYPTION_KEY`.
 - Render/Streamlit Cloud: configure as variáveis de ambiente no painel do serviço.
+- `ENCRYPTION_KEY` deve ser uma chave Fernet (base64 urlsafe, 32 bytes). Exemplo de geração:
+  ```bash
+  python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+  ```
 
 ## Qualidade e testes
 ```bash

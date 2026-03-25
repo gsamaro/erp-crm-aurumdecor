@@ -1,4 +1,8 @@
+from cryptography.fernet import Fernet
+
+from app.config.settings import settings
 from app.domain.client import Client
+from app.security.crypto import encrypt_value
 from app.services.client_service import ClientService
 
 
@@ -15,6 +19,7 @@ class FakeClientRepository:
 
 
 def test_create_client():
+    settings.encryption_key = Fernet.generate_key().decode("utf-8")
     repo = FakeClientRepository()
     service = ClientService(repo)
 
@@ -28,12 +33,18 @@ def test_create_client():
 
     assert client.email == "cli@example.com"
     assert repo.clients[0].name == "Cliente"
+    assert repo.clients[0].email != "cli@example.com"
 
 
 def test_update_client():
+    settings.encryption_key = Fernet.generate_key().decode("utf-8")
     repo = FakeClientRepository()
     service = ClientService(repo)
-    client = Client(name="Cliente", phone="111", email="cli@example.com")
+    client = Client(
+        name="Cliente",
+        phone=encrypt_value("111"),
+        email=encrypt_value("cli@example.com"),
+    )
 
     updated = service.update_client(client, {"status": "inactive", "notes": "ok"})
 

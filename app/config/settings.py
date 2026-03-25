@@ -1,3 +1,4 @@
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -6,8 +7,15 @@ class Settings(BaseSettings):
     environment: str = "development"
     database_url: str
     secret_key: str
+    encryption_key: str = ""
     jwt_algorithm: str = "HS256"
     jwt_exp_minutes: int = 60
+
+    @model_validator(mode="after")
+    def _validate_security(self):
+        if self.environment == "production" and not self.encryption_key:
+            raise ValueError("ENCRYPTION_KEY is required in production")
+        return self
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

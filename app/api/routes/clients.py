@@ -32,7 +32,8 @@ def list_clients(
     db: Session = Depends(get_db),
 ):
     repo = ClientRepository(db)
-    return repo.list()
+    service = ClientService(repo)
+    return [service.decrypt_client(client) for client in repo.list()]
 
 
 @router.get("/{client_id}", response_model=ClientOut)
@@ -45,7 +46,8 @@ def get_client(
     client = repo.get_by_id(client_id)
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
-    return client
+    service = ClientService(repo)
+    return service.decrypt_client(client)
 
 
 @router.put("/{client_id}", response_model=ClientOut)

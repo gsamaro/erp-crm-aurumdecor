@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -41,6 +42,7 @@ def seed_admin(session_local):
 
 def test_client_crud_routes():
     settings.secret_key = "test-secret-32-bytes-minimum-length"
+    settings.encryption_key = Fernet.generate_key().decode("utf-8")
     engine, session_local = setup_test_db()
 
     from app.api.deps import get_db
