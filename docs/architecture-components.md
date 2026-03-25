@@ -1,10 +1,11 @@
 # Arquitetura de Software — Componentes
 
 ## API Layer (FastAPI - Render)
-- Autenticação e autorização (inicialmente Admin)
+- Autenticação e autorização obrigatórias (inicialmente Admin)
 - Rotas por módulo: CRM, Produtos, Eventos, Orçamentos, Financeiro, Relatórios
 - Validação via DTOs/Schemas
 - Versionamento de API desde o início
+- Nenhum endpoint público além de login/bootstrap; demais rotas protegidas
 
 ## Service Layer
 - Orquestra regras de negócio
@@ -17,6 +18,7 @@
 - Transações controladas por unidade de trabalho
 - Consultas otimizadas por módulo
 - Conexão com PostgreSQL no Supabase
+- Queries parametrizadas/ORM (sem SQL concatenado) para prevenir SQL injection
 
 ## Domain Layer
 - Entidades: Product, Event, Budget, Client, AccountsPayable, AccountsReceivable, Conversation, Message, etc.
@@ -26,6 +28,7 @@
 - Interface administrativa por módulos
 - Navegação simples e orientada a tarefas
 - Acesso a dados somente via API (sem conexão direta ao banco)
+- Guardas de sessão em todas as páginas (nenhuma página pública)
 
 ## Integration Layer (WhatsApp API)
 - Webhook para entrada de mensagens

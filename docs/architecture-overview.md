@@ -9,6 +9,7 @@ Definir a arquitetura de alto nível para o ERP + CRM + WhatsApp, garantindo esc
 - Baixo acoplamento e alta coesão
 - Testes automatizados (unitários e integrados) desde o início
 - Observabilidade (logs e rastreabilidade)
+- Segurança por padrão (autenticação obrigatória, hashing de dados sensíveis e prevenção de SQL injection)
 
 ## Visão Geral dos Componentes
 ```
@@ -44,6 +45,8 @@ Definir a arquitetura de alto nível para o ERP + CRM + WhatsApp, garantindo esc
 - Backend hospedado no Render
 - Streamlit não acessa o banco diretamente; todo acesso passa pela API
 - Migrations controladas por ferramenta dedicada (Alembic)
+- Autenticação obrigatória em todas as rotas da API e guardas de sessão no Streamlit
+- Persistência com ORM/queries parametrizadas (sem SQL concatenado)
 
 ## Restrições
 - Dashboard avançado fica para fase futura

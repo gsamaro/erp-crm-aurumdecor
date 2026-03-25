@@ -29,6 +29,7 @@ Principios:
 - Baixo acoplamento e alta coesao
 - Testes automatizados (unitarios e integrados) desde o inicio
 - Observabilidade (logs e rastreabilidade)
+- Seguranca por padrao (autenticacao obrigatoria, hashing de dados sensiveis e protecao contra SQL injection)
 
 Camadas:
 1. Presentation Layer (Streamlit)
@@ -62,6 +63,8 @@ Camadas:
 - Repository Pattern e Service Layer.
 - Dependency Injection.
 - Migrations com ferramenta dedicada (Alembic).
+- Autenticacao obrigatoria em todas as rotas da API e guardas de sessao no Streamlit.
+- Queries parametrizadas/ORM (sem SQL concatenado).
 
 ## 7. Requisitos Nao Funcionais
 - Manutenibilidade: codigo modular e testavel.
@@ -75,6 +78,11 @@ Camadas:
 - Secrets em variaveis de ambiente.
 - Protecao de endpoints e rate limit para webhook.
 - Registro de logs de acesso e erros.
+- Todas as rotas da API exigem autenticacao (exceto login/bootstrap).
+- Streamlit bloqueia acesso a paginas sem sessao valida (nenhuma pagina publica).
+- Dados sensiveis sempre armazenados como hash, nunca em texto puro.
+- Dados pessoais (LGPD, nao sensiveis) protegidos: CPF, RG, nome, endereco, telefone, email, IP, placa de carro, dados financeiros, salario e historico de compras.
+- Persistencia com ORM/queries parametrizadas para evitar SQL injection.
 
 ## 9. Dados e Persistencia (resumo)
 - Tabelas principais: users, clients, products, product_amortization, inventory, events,

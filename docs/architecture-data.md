@@ -24,6 +24,8 @@ Tabelas principais:
 - Migrations controladas com Alembic
 - Acesso ao banco somente via API (Streamlit não conecta direto)
 - Auditoria via logs
+- Dados sensíveis persistidos como hash (ex.: senha, tokens)
+- Consultas com ORM/queries parametrizadas (sem SQL concatenado)
 
 ## Regras de Consistência
 - Evento consome produtos e registra amortização

@@ -5,6 +5,7 @@
 - Endpoint dedicado para validação e assinatura
 - Processamento assíncrono (fila futura)
 - API hospedada no Render
+- Endpoints protegidos por autenticação/assinatura; nenhum endpoint público além do webhook validado
 
 ## Fluxo básico
 1. Mensagem recebida via webhook

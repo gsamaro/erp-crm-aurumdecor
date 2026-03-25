@@ -96,6 +96,11 @@ Garantir acesso seguro ao painel administrativo e permitir criação de usuário
 * **Sessão persistente** enquanto o usuário estiver ativo na aplicação.
 * **Logout automático** após **15 minutos de inatividade** (timeout baseado no último acesso).
 * **Bloqueio de navegação**: páginas protegidas redirecionam para login quando não houver sessão válida.
+* **APIs sempre autenticadas**: todas as rotas da API exigem autenticação (com exceções explícitas como login/bootstrap), sem endpoints públicos.
+* **Streamlit protegido por sessão**: cada página valida a sessão ativa antes de renderizar e redireciona para login quando inválida.
+* **Nenhuma página pública**: acesso direto por URL a páginas internas deve ser bloqueado se não houver usuário autenticado.
+* **Dados sensíveis sempre hasheados** (ex.: senha, tokens de reset e segredos), nunca armazenados em texto puro.
+* **Dados pessoais (LGPD) protegidos**: CPF, RG, nome, endereço, telefone, email, IP, placa de carro, dados financeiros, salário e histórico de compras devem ser tratados como dados pessoais (não sensíveis) com controle de acesso e proteção em trânsito/repouso.
 
 ## Caso de uso: Acesso ao painel administrativo
 
@@ -435,6 +440,11 @@ O projeto deve conter:
 * Variáveis de ambiente
 * Migrations de banco
 * Versionamento de API
+* Proteção contra SQL injection (ORM/queries parametrizadas, sem concatenação de SQL)
+* Autenticação obrigatória em todas as rotas da API
+* Guardas de sessão no Streamlit (nenhuma página pública)
+* Dados sensíveis sempre hasheados (bcrypt/argon2) e nunca em texto puro
+* Dados pessoais (LGPD) protegidos: CPF, RG, nome, endereço, telefone, email, IP, placa de carro, dados financeiros, salário e histórico de compras
 
 ---
 
