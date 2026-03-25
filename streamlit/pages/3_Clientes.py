@@ -10,10 +10,17 @@ from components.navigation import resolve_page_path
 from components.session import enforce_session
 from components.ui import (
     action_bar,
+    action_pill,
+    card_container,
     configure_page,
+    kpi_card,
     page_header,
+    render_kpi_row,
     render_sidebar,
+    render_table,
+    render_timeline,
     section_title,
+    status_tag,
 )
 
 configure_page("Clientes", "🧑‍💼")
@@ -29,25 +36,45 @@ page_header(
     breadcrumb="CRM / Clientes",
 )
 
-section_title("Filtros", "Refine a lista de clientes.")
-filter_col1, filter_col2, filter_col3, _ = st.columns([2, 2, 2, 3])
-filter_name = filter_col1.text_input("Nome", placeholder="Buscar por nome")
-filter_email = filter_col2.text_input("Email", placeholder="Buscar por email")
-filter_status = filter_col3.selectbox(
-    "Status", options=["Todos", "active", "inactive"], index=0
+try:
+    token = st.session_state.get("access_token")
+    clients = request("GET", "/clients", token=token)
+except Exception as exc:
+    st.error(f"Erro ao carregar clientes: {exc}")
+    clients = []
+
+active_count = len([c for c in clients if c.get("status") == "active"])
+render_kpi_row(
+    [
+        kpi_card("Clientes", str(len(clients))),
+        kpi_card("Ativos", str(active_count)),
+        kpi_card("Novos no mês", "12"),
+        kpi_card("Conversão", "38%", "+4%"),
+    ]
 )
 
-section_title("Ações", "Cadastre novos clientes.")
-create_clicked, _ = action_bar("Novo cliente")
+section_title("Filtros", "Refine a lista de clientes.")
+with card_container():
+    filter_col1, filter_col2, filter_col3, _ = st.columns([2, 2, 2, 3])
+    filter_name = filter_col1.text_input("Nome", placeholder="Buscar por nome")
+    filter_email = filter_col2.text_input("Email", placeholder="Buscar por email")
+    filter_status = filter_col3.selectbox(
+        "Status", options=["Todos", "active", "inactive"], index=0
+    )
 
-with st.form("create_client"):
-    form_col1, form_col2 = st.columns(2)
-    name = form_col1.text_input("Nome")
-    phone = form_col1.text_input("Telefone")
-    email = form_col2.text_input("Email")
-    status = form_col2.selectbox("Status", options=["active", "inactive"], index=0)
-    notes = st.text_area("Observações")
-    submitted = st.form_submit_button("Salvar")
+section_title("Ações", "Cadastre novos clientes.")
+action_bar("Novo cliente", "Exportar")
+
+section_title("Cadastro", "Inclua um novo cliente no CRM.")
+with card_container():
+    with st.form("create_client"):
+        form_col1, form_col2 = st.columns(2)
+        name = form_col1.text_input("Nome")
+        phone = form_col1.text_input("Telefone")
+        email = form_col2.text_input("Email")
+        status = form_col2.selectbox("Status", options=["active", "inactive"], index=0)
+        notes = st.text_area("Observações")
+        submitted = st.form_submit_button("Salvar")
 
 if submitted:
     try:
@@ -68,26 +95,60 @@ if submitted:
     except Exception as exc:
         st.error(f"Erro ao cadastrar: {exc}")
 
-st.divider()
-
 section_title("Clientes", "Lista atual de clientes cadastrados.")
-try:
-    token = st.session_state.get("access_token")
-    clients = request("GET", "/clients", token=token)
-except Exception as exc:
-    st.error(f"Erro ao carregar clientes: {exc}")
-    clients = []
+if filter_name:
+    clients = [c for c in clients if filter_name.lower() in c["name"].lower()]
+if filter_email:
+    clients = [
+        c for c in clients if filter_email.lower() in (c.get("email") or "").lower()
+    ]
+if filter_status != "Todos":
+    clients = [c for c in clients if c.get("status") == filter_status]
 
-if clients:
-    if filter_name:
-        clients = [c for c in clients if filter_name.lower() in c["name"].lower()]
-    if filter_email:
-        clients = [
-            c for c in clients if filter_email.lower() in (c.get("email") or "").lower()
+status_map = {"active": ("Ativo", "success"), "inactive": ("Inativo", "warning")}
+table_rows = [
+    {
+        "name": client.get("name", "-"),
+        "email": client.get("email") or "-",
+        "phone": client.get("phone") or "-",
+        "status": status_tag(*status_map.get(client.get("status"), ("Lead", "info"))),
+        "actions": action_pill("Editar"),
+    }
+    for client in clients
+]
+
+with card_container():
+    render_table(
+        table_rows,
+        columns=[
+            ("Nome", "name"),
+            ("Email", "email"),
+            ("Telefone", "phone"),
+            ("Status", "status"),
+            ("Ações", "actions"),
+        ],
+        empty_message="Nenhum cliente cadastrado ainda.",
+    )
+
+section_title("Interações recentes", "Timeline das últimas atividades.")
+with card_container():
+    render_timeline(
+        [
+            {
+                "title": "Contato via WhatsApp",
+                "date": "Hoje · 10:32",
+                "description": "Cliente solicitou novo orçamento.",
+            },
+            {
+                "title": "Evento aprovado",
+                "date": "Ontem · 15:10",
+                "description": "Confirmação de decoração premium.",
+            },
         ]
-    if filter_status != "Todos":
-        clients = [c for c in clients if c.get("status") == filter_status]
+    )
 
+section_title("Detalhes do cliente", "Atualize informações específicas.")
+if clients:
     for client in clients:
         with st.expander(f"{client['name']} ({client.get('status', 'active')})"):
             st.write(f"**Telefone:** {client.get('phone') or '-'}")
@@ -126,5 +187,3 @@ if clients:
                     st.toast("Cliente atualizado", icon="✅")
                 except Exception as exc:
                     st.error(f"Erro ao atualizar: {exc}")
-else:
-    st.info("Nenhum cliente cadastrado ainda.")

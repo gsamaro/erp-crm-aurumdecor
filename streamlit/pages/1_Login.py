@@ -8,19 +8,37 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from components.api import request
 from components.navigation import resolve_page_path
 from components.session import enforce_session, refresh_session
-from components.ui import configure_page, page_header, render_sidebar, section_title
+from components.ui import (
+    card_container,
+    configure_page,
+    kpi_card,
+    page_header,
+    render_kpi_row,
+    render_sidebar,
+    section_title,
+)
 
 configure_page("Login", "🔐")
 render_sidebar(__file__)
 page_header("Login", "Acesse o painel administrativo", breadcrumb="Início / Login")
 
+render_kpi_row(
+    [
+        kpi_card("Acesso seguro", "SSL"),
+        kpi_card("Sessão", "15 min"),
+        kpi_card("Suporte", "Equipe interna"),
+    ]
+)
+
 if enforce_session(st.session_state):
     st.switch_page(resolve_page_path("0_Menu.py", __file__))
 
-with st.form("login_form"):
-    email = st.text_input("Email")
-    password = st.text_input("Senha", type="password")
-    submitted = st.form_submit_button("Entrar")
+with card_container():
+    section_title("Credenciais", "Use seu email corporativo para acessar.")
+    with st.form("login_form"):
+        email = st.text_input("Email")
+        password = st.text_input("Senha", type="password")
+        submitted = st.form_submit_button("Entrar")
 
 login_ok = False
 if submitted:
@@ -46,17 +64,16 @@ except Exception:
     bootstrap_allowed = False
 
 if bootstrap_allowed:
-    st.divider()
     section_title(
         "Primeiro acesso (bootstrap)",
         "Crie o primeiro admin caso ainda não exista nenhum usuário.",
     )
-
-    with st.form("bootstrap_form"):
-        name = st.text_input("Nome", key="boot_name")
-        boot_email = st.text_input("Email", key="boot_email")
-        boot_password = st.text_input("Senha", type="password", key="boot_password")
-        boot_submit = st.form_submit_button("Criar admin")
+    with card_container():
+        with st.form("bootstrap_form"):
+            name = st.text_input("Nome", key="boot_name")
+            boot_email = st.text_input("Email", key="boot_email")
+            boot_password = st.text_input("Senha", type="password", key="boot_password")
+            boot_submit = st.form_submit_button("Criar admin")
 
     if boot_submit:
         try:
